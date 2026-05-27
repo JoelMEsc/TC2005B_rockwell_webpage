@@ -13,6 +13,9 @@ function SignUp() {
   const [country, setCountry] = useState('USA');
   const [nickname, setNickname] = useState('');
   const [role, setRole] = useState('estudiante');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
   const [error, setError] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -52,7 +55,13 @@ function SignUp() {
       return;
     }
 
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match.');
+      return;
+    }
+
     setError(false);
+    setPasswordError('');
     setLoading(true);
     try {
       await axios.post(`${apiBase}/api/auth/registro`,
@@ -149,7 +158,45 @@ function SignUp() {
 
             <div className="flex flex-col gap-1">
               <label className={labelClass}>Password</label>
-              <input type="password" placeholder="securePassword123" className={inputClass()} value={password} onChange={(e) => setPassword(e.target.value)} />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="securePassword123"
+                  className={inputClass(!!passwordError) + ' pr-10'}
+                  value={password}
+                  onChange={(e) => { setPasswordError(''); setPassword(e.target.value); }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(v => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9-4-9-7s4-7 9-7c1.08 0 2.12.18 3.08.5M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className={labelClass}>Confirm Password</label>
+              <input
+                type="password"
+                placeholder="Repeat your password"
+                className={inputClass(!!passwordError)}
+                value={confirmPassword}
+                onChange={(e) => { setPasswordError(''); setConfirmPassword(e.target.value); }}
+              />
+              {passwordError && <p className="text-red-500 text-xs font-semibold">{passwordError}</p>}
             </div>
 
             {error && (
@@ -195,12 +242,53 @@ function SignUp() {
               <option value="otra_empresa">Other Company</option>
             </select>
 
-            {/* Password + botón — 4 columnas */}
+            {/* Password + Confirm + botón — 4 columnas */}
             <div className="col-span-4 flex flex-col items-center gap-5 pt-2">
-              <div className="grid items-center gap-x-6" style={{ gridTemplateColumns: 'auto 1fr' }}>
-                <label className={labelClass}>Password</label>
-                <input type="password" placeholder="securePassword123" className={inputClass()} value={password} onChange={(e) => setPassword(e.target.value)} />
+              <div className="grid items-start gap-x-6 gap-y-4 w-full" style={{ gridTemplateColumns: 'auto 1fr' }}>
+                <label className={`${labelClass} pt-2`}>Password</label>
+                <div className="flex flex-col gap-1">
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="securePassword123"
+                      className={inputClass(!!passwordError) + ' pr-10'}
+                      value={password}
+                      onChange={(e) => { setPasswordError(''); setPassword(e.target.value); }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(v => !v)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-5 0-9-4-9-7s4-7 9-7c1.08 0 2.12.18 3.08.5M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <label className={`${labelClass} pt-2`}>Confirm Password</label>
+                <div className="flex flex-col gap-1">
+                  <input
+                    type="password"
+                    placeholder="Repeat your password"
+                    className={inputClass(!!passwordError)}
+                    value={confirmPassword}
+                    onChange={(e) => { setPasswordError(''); setConfirmPassword(e.target.value); }}
+                  />
+                  {passwordError && <p className="text-red-500 text-xs font-semibold">{passwordError}</p>}
+                </div>
               </div>
+
               {error && (
                 <p className="text-red-500 text-sm text-center font-semibold">
                   Error al registrarse. Intenta de nuevo.

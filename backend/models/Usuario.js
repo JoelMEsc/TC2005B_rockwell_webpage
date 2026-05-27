@@ -17,9 +17,10 @@ const Usuario = sequelize.define('Usuario', {
   role:                 { type: 'rol_tipo', allowNull: false },
   max_score:            { type: DataTypes.INTEGER, defaultValue: 0 },
   nickname:             { type: DataTypes.STRING(20), allowNull: false, unique: true },
-  is_admin:             { type: DataTypes.BOOLEAN, defaultValue: false },
-  registration_date:    { type: DataTypes.DATE,    defaultValue: DataTypes.NOW },
-  active:               { type: DataTypes.BOOLEAN, defaultValue: true }
+  is_admin:             { type: DataTypes.BOOLEAN,  defaultValue: false },
+  registration_date:    { type: DataTypes.DATE,     defaultValue: DataTypes.NOW },
+  active:               { type: DataTypes.BOOLEAN,  defaultValue: true },
+  last_update_date:     { type: DataTypes.DATE,     allowNull: true, defaultValue: null }
 
 }, {
   tableName: 'usuario',
