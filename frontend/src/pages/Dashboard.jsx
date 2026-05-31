@@ -3,6 +3,8 @@ import axios from 'axios';
 import UserCard from '../components/UserCard.jsx';
 import GameCard from '../components/GameCard.jsx';
 
+// Constantes para no desplegar nombres de datos como aparecen en la Base de Datos
+
 const ROLES = [
   { value: '',                    label: 'All Roles' },
   { value: 'estudiante',          label: 'Student' },
@@ -73,7 +75,7 @@ function FilterDate({ label, value, onChange }) {
   );
 }
 
-// Nuevo: filtro de texto para buscar por nombre de juego
+// Filtro de texto para buscar por nombre de juego
 function FilterText({ label, value, onChange, placeholder }) {
   return (
     <div className="flex flex-col gap-1">
@@ -147,7 +149,7 @@ function Dashboard() {
   const [completionMin,  setCompletionMin]  = useState('');
   const [completionMax,  setCompletionMax]  = useState('');
 
-  // NUEVO: filtro por nombre de juego (texto libre)
+  // Filtro por nombre de juego (texto libre)
   const [gameNameFilter, setGameNameFilter] = useState('');
 
   const totalPages  = Math.ceil(total  / PAGE_SIZE);
@@ -198,7 +200,7 @@ function Dashboard() {
     finally  { setLoadingK(false); }
   }, [buildUserParams]);
 
-  // NOTA: fetchJuegos pide todos los juegos que pasen los filtros de dificultad
+  // FetchJuegos pide todos los juegos que pasen los filtros de dificultad
   // y win rate. El filtro por nombre se aplica después, en el frontend.
   // Pedimos un límite alto (999) para tener todos disponibles al filtrar por nombre.
   const fetchJuegos = useCallback(async () => {
@@ -234,7 +236,7 @@ function Dashboard() {
   const handleClearGameFilters = () => {
     setPageJ(0); setDiffMin(''); setDiffMax('');
     setCompletionMin(''); setCompletionMax('');
-    setGameNameFilter('');  // limpiar también el nombre
+    setGameNameFilter('');  
   };
   const hasGameFilters = diffMin || diffMax || completionMin || completionMax || gameNameFilter;
 

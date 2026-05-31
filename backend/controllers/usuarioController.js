@@ -17,6 +17,7 @@ exports.getPerfil = async (req, res) => {
 };
 
 exports.getKpis = async (req, res) => {
+  // Argumentos
   const {
     country,
     role,
@@ -41,7 +42,7 @@ exports.getKpis = async (req, res) => {
         :registered_before::TIMESTAMP
       )`,
       {
-        replacements: {
+        replacements: { // Nulo si no se paso argumento
           country:           country           ?? null,
           role:              role              ?? null,
           score_min:         score_min         ? parseInt(score_min)  : null,
@@ -55,7 +56,7 @@ exports.getKpis = async (req, res) => {
       }
     );
 
-    res.json(rows[0] ?? {});
+    res.json(rows[0] ?? {}); // JSON vacio si no se obtuvieron resultados
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error al obtener KPIs' });

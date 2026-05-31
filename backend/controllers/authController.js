@@ -44,12 +44,13 @@ exports.login = async (req, res) => {
     if (!usuario.active)
       return res.status(403).json({error: "Cuenta desactivada"})
 
+    // Firma token con id de usuario, correo y si es admin
     const token = jwt.sign(
       {user_id: usuario.user_id, email: usuario.email, is_admin: usuario.is_admin}, 
       process.env.JWT_SECRET, 
       {expiresIn: '1d'}
     )
-
+    // Token saber si es admin, usado para frontend
     res.json({ token, is_admin: usuario.is_admin })
 
   } catch (err) {

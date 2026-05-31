@@ -6,7 +6,7 @@ exports.getRondasUsuario = async (req, res) => {
   const requesterId = req.usuario.user_id;
   const isAdmin     = req.usuario.is_admin;
 
-  // Un usuario solo puede ver sus propias rondas; los admins pueden ver cualquiera
+  // Un usuario solo puede ver sus propias rondas, los admins pueden ver cualquiera
   if (!isAdmin && parseInt(id) !== requesterId) {
     return res.status(403).json({ error: 'No tienes permiso para ver estas rondas' });
   }

@@ -1,3 +1,11 @@
+// Pagina inicial lleva a Home
+// Icono de usuario lleva a Login, si se inicia sesion lleva a Profile
+// Pagina de Profile lleva a Login si no se ha iniciado sesion
+// Pagina de SignUp se accede desde Login
+// Pagina de Services se accede desde Home
+// Pagina de Game se accede desde Home, lleva a Login si no se ha iniciado sesion
+// Pagina de Dashboard se accede desde Game, lleva a Login si no se ha iniciado sesion, a Home si no es Admin
+
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Home        from './pages/Home.jsx'
 import Login       from './pages/Login.jsx'

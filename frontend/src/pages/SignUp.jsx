@@ -95,7 +95,7 @@ function SignUp() {
 
   const labelClass = "font-bold text-gray-800 text-sm sm:text-base";
 
-  // Ahora acepta un flag para marcar el campo en rojo individualmente
+  // Acepta un flag para marcar el campo en rojo individualmente
   const inputClass = (hasFieldError = false) =>
     `rounded-lg px-4 py-2 text-black placeholder-gray-400 outline-none focus:ring-2 transition w-full ${
       hasFieldError

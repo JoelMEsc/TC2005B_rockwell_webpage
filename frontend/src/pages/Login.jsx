@@ -11,6 +11,8 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  // Guardar tokens al iniciar sesion
+  // No es posible ingresar con cuentas desactivadas
   const handleLogin = async () => {
     setError('');
     setLoading(true);
@@ -35,11 +37,13 @@ function Login() {
     }
   };
 
+  // Logica centralizada para llamar setters de useState
   const handleChange = (setter) => (e) => {
     setError('');
     setter(e.target.value);
   };
 
+  // Cambio de estilo para casillas cuando el ingreso es invalido
   const inputClass = `w-full rounded-lg px-4 py-2 text-black placeholder-gray-400 outline-none focus:ring-2 transition ${
     error
       ? 'bg-red-100 ring-2 ring-red-500'
