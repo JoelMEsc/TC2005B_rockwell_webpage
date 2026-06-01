@@ -1,9 +1,23 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Game() {
   const navigate = useNavigate();
   const isAdmin = localStorage.getItem('is_admin') === 'true';
+  const iframeRef = useRef(null);
+
+  const handleFullscreen = () => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    if (iframe.requestFullscreen) {
+      iframe.requestFullscreen();
+    } else if (iframe.webkitRequestFullscreen) {
+      iframe.webkitRequestFullscreen();
+    } else if (iframe.mozRequestFullScreen) {
+      iframe.mozRequestFullScreen();
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-[calc(100vh-56px)] sm:min-h-[calc(100vh-72px)]">
@@ -17,29 +31,43 @@ function Game() {
       </div>
 
       {/* Contenido */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 gap-6 py-6">
+      <div className="flex-1 flex flex-col items-center justify-center px-2 sm:px-4 gap-4 py-6">
 
-        {/* Placeholder — aspect-video en desktop, altura fija más compacta en móvil */}
-        <div className="w-full max-w-3xl sm:aspect-video rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center shadow-inner"
-          style={{ minHeight: '200px' }}>
-          <div className="flex flex-col items-center gap-3 text-gray-300 select-none">
-            <svg viewBox="0 0 80 80" className="w-12 h-12 sm:w-16 sm:h-16" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <rect x="10" y="28" width="60" height="36" rx="4" />
-              <path d="M28 44h4M40 38v12M36 44h4M52 40l4 4-4 4" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M30 28V20a10 10 0 0120 0v8" strokeLinecap="round"/>
+        {/* Contenedor del juego */}
+        <div className="relative w-full max-w-6xl rounded-2xl overflow-hidden shadow-lg border border-gray-200"
+          style={{ aspectRatio: '16/9' }}>
+          
+          <iframe
+            ref={iframeRef}
+            src={`${import.meta.env.VITE_API_URL}/secure-factory-game/index.html`}
+            title="Game"
+            className="w-full h-full border-0"
+            allow="autoplay; fullscreen"
+          />
+
+          {/* Botón pantalla completa */}
+          <button
+            onClick={handleFullscreen}
+            className="absolute bottom-3 right-3 bg-black/50 hover:bg-black/75 text-white rounded-lg p-2 transition-colors duration-150"
+            title="Pantalla completa"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
             </svg>
-            <span className="font-bold tracking-widest uppercase text-xs sm:text-sm">Game Coming Soon</span>
-          </div>
+          </button>
         </div>
 
-        {isAdmin && (
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="bg-[#003e7e] text-white font-bold px-10 py-2 rounded-full active:scale-95 transition-transform duration-150 hover:bg-[#002d5c] w-full sm:w-auto"
-          >
-            Go to Dashboard
-          </button>
-        )}
+        {/* Botones */}
+        <div className="flex gap-3 w-full max-w-6xl justify-end">
+          {isAdmin && (
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="bg-[#003e7e] text-white font-bold px-10 py-2 rounded-full active:scale-95 transition-transform duration-150 hover:bg-[#002d5c]"
+            >
+              Go to Dashboard
+            </button>
+          )}
+        </div>
 
       </div>
     </div>
