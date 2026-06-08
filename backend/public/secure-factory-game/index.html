@@ -6,6 +6,16 @@
     <title>Unity Web Player | Proyecto_Secure_Factory</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <script>
+      // Obtener el token desde los parámetros de búsqueda de la URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      if (token) {
+        window.unityToken = token;
+      } else {
+        console.warn("Token no encontrado en la URL del juego.");
+      }
+    </script>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -52,12 +62,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Secure_Factory_HTML.loader.js";
+      var loaderUrl = buildUrl + "/secure-factory-game.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/Secure_Factory_HTML.data",
-        frameworkUrl: buildUrl + "/Secure_Factory_HTML.framework.js",
-        codeUrl: buildUrl + "/Secure_Factory_HTML.wasm",
+        dataUrl: buildUrl + "/secure-factory-game.data",
+        frameworkUrl: buildUrl + "/secure-factory-game.framework.js",
+        codeUrl: buildUrl + "/secure-factory-game.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Proyecto_Secure_Factory",

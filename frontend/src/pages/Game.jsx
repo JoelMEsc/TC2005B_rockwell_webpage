@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Game() {
+  const token = localStorage.getItem('token');
+
   const navigate = useNavigate();
   const isAdmin = localStorage.getItem('is_admin') === 'true';
   const iframeRef = useRef(null);
@@ -39,7 +41,7 @@ function Game() {
           
           <iframe
             ref={iframeRef}
-            src={`${import.meta.env.VITE_API_URL}/secure-factory-game/index.html`}
+            src={`${import.meta.env.VITE_API_URL}/secure-factory-game/index.html?token=${encodeURIComponent(token)}`}
             title="Game"
             className="w-full h-full border-0"
             allow="autoplay; fullscreen"

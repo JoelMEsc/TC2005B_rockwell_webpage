@@ -2,8 +2,13 @@ const router         = require('express').Router();
 const verificarToken = require('../middleware/verificarToken');
 const ctrl           = require('../controllers/rondaController');
 
-// Cualquier usuario autenticado puede llamar este endpoint.
-// El controller valida que solo veas tus propias rondas (salvo que seas admin).
+// Obtener historial de rondas del usuario
 router.get('/:id', verificarToken, ctrl.getRondasUsuario);
+
+// Endpoints que llamará Unity
+router.post('/', verificarToken, ctrl.crearRonda);
+router.post('/:round_id/juegos', verificarToken, ctrl.registrarJuego);
+router.patch('/:round_id/juegos/:game_id/ganar', verificarToken, ctrl.ganarJuego);
+router.patch('/:round_id/finalizar', verificarToken, ctrl.finalizarRonda);
 
 module.exports = router;
