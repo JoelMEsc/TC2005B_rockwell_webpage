@@ -15,6 +15,15 @@ const DIFFICULTY_COLORS = {
   5: 'bg-red-100   text-red-700',
 };
 
+// Convierte PascalCase a palabras separadas
+function formatGameName(name) {
+  if (!name) return '—';
+  return name
+    .replace(/([A-Z][a-z]+)/g, ' $1')
+    .replace(/([A-Z]+)(?=[A-Z][a-z])/g, ' $1')
+    .trim();
+}
+
 function calcStats(rondas) {
   if (!rondas.length) return null;
 
@@ -23,7 +32,6 @@ function calcStats(rondas) {
   const avgScore     = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
   const totalRondas  = rondas.length;
 
-  // Aplanar todos los juegos de todas las rondas
   const allGames = rondas.flatMap(r =>
     Array.isArray(r.juegos) ? r.juegos : JSON.parse(r.juegos ?? '[]')
   );
@@ -31,7 +39,6 @@ function calcStats(rondas) {
   const wonGames   = allGames.filter(g => g.won).length;
   const winRate    = totalGames ? Math.round((wonGames / totalGames) * 100) : 0;
 
-  // Frecuencia por juego
   const freq = {};
   const wins = {};
   allGames.forEach(g => {
@@ -48,9 +55,9 @@ function calcStats(rondas) {
 
 function StatCard({ label, value, sub }) {
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-gray-100 px-6 py-4 flex flex-col gap-1">
+    <div className="bg-white rounded-2xl shadow-md border border-gray-100 px-6 py-4 flex flex-col gap-1 min-w-0">
       <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400">{label}</span>
-      <span className="text-2xl font-extrabold text-[#1a1a1a]">{value}</span>
+      <span className="text-2xl font-extrabold text-[#1a1a1a] break-words leading-tight">{value}</span>
       {sub && <span className="text-xs text-gray-400">{sub}</span>}
     </div>
   );
@@ -85,27 +92,22 @@ function RoundCard({ ronda }) {
 
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden transition-shadow duration-200 hover:shadow-lg">
-      {/* Barra superior */}
       <div className="h-1 w-full" style={{ background: 'linear-gradient(to right, #F58025, #CD163F)' }} />
 
-      {/* Header clickable */}
       <button
         onClick={() => setOpen(o => !o)}
         className="w-full p-4 flex items-center gap-6 text-left"
       >
-        {/* Score */}
         <div className="flex flex-col gap-0.5 w-28 shrink-0">
           <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Score</span>
           <span className="text-xl font-extrabold text-[#1a1a1a]">{ronda.score.toLocaleString('en-US')}</span>
         </div>
 
-        {/* Fecha */}
-        <div className="flex flex-col gap-0.5 flex-1">
+        <div className="flex flex-col gap-0.5 flex-1 min-w-0">
           <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Date</span>
           <span className="text-sm font-semibold text-[#1a1a1a]">{fecha}</span>
         </div>
 
-        {/* Juegos ganados */}
         <div className="flex flex-col gap-0.5 shrink-0 items-center">
           <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Won</span>
           <span className="text-sm font-semibold text-[#1a1a1a]">
@@ -113,7 +115,6 @@ function RoundCard({ ronda }) {
           </span>
         </div>
 
-        {/* Chevron */}
         <svg
           className={`w-4 h-4 text-gray-400 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
@@ -122,23 +123,20 @@ function RoundCard({ ronda }) {
         </svg>
       </button>
 
-      {/* Juegos expandibles */}
       {open && (
         <div className="px-4 pb-4 flex flex-col gap-2 border-t border-gray-100 pt-3">
           {juegos.map(g => (
-            <div key={g.round_game_id} className="flex items-center gap-4 py-1.5">
-              {/* Resultado */}
+            <div key={g.round_game_id} className="flex items-center gap-3 py-1.5 min-w-0">
               <span className={`w-2 h-2 rounded-full shrink-0 ${g.won ? 'bg-green-400' : 'bg-red-300'}`} />
 
-              {/* Nombre */}
-              <span className="text-sm font-semibold text-[#1a1a1a] flex-1">{g.name}</span>
+              <span className="text-sm font-semibold text-[#1a1a1a] flex-1 min-w-0 truncate" title={formatGameName(g.name)}>
+                {formatGameName(g.name)}
+              </span>
 
-              {/* Dificultad */}
               <span className={`text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full shrink-0 ${DIFFICULTY_COLORS[g.difficulty] ?? 'bg-gray-100 text-gray-400'}`}>
                 {DIFFICULTY_LABELS[g.difficulty] ?? `Lv ${g.difficulty}`}
               </span>
 
-              {/* Won/Lost */}
               <span className={`text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full shrink-0 ${g.won ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-500'}`}>
                 {g.won ? 'Won' : 'Lost'}
               </span>
@@ -153,11 +151,11 @@ function RoundCard({ ronda }) {
 // ── Página principal ──────────────────────────────────────────────────────────
 
 function Performance() {
-  const { id }       = useParams();
-  const navigate     = useNavigate();
-  const [rondas,   setRondas]   = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [error,    setError]    = useState(false);
+  const { id }     = useParams();
+  const navigate   = useNavigate();
+  const [rondas,  setRondas]  = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState(false);
 
   useEffect(() => {
     const fetch = async () => {
@@ -181,7 +179,6 @@ function Performance() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Banner */}
       <div
         className="w-full py-8 flex items-center justify-center rounded-b-3xl shadow-md relative"
         style={{ background: 'linear-gradient(to right, #F58025, #CD163F)' }}
@@ -200,16 +197,13 @@ function Performance() {
 
       <div className="max-w-3xl mx-auto w-full px-6 py-8 flex flex-col gap-8">
 
-        {/* Loading / Error */}
         {loading && <p className="text-gray-400 font-semibold animate-pulse text-center">Loading...</p>}
         {error   && <p className="text-red-500 font-semibold text-center">Could not load performance data.</p>}
 
-        {/* Sin rondas */}
         {!loading && !error && !rondas.length && (
           <p className="text-gray-400 font-semibold text-center">No rounds played yet.</p>
         )}
 
-        {/* Stats */}
         {stats && (
           <div className="flex flex-col gap-4">
             <h2 className="text-xs font-bold tracking-widest uppercase text-gray-400">Overview</h2>
@@ -218,8 +212,8 @@ function Performance() {
               <StatCard label="Max Score"    value={stats.maxScore.toLocaleString('en-US')} />
               <StatCard label="Avg Score"    value={stats.avgScore.toLocaleString('en-US')} />
               <StatCard label="Total Rounds" value={stats.totalRondas} />
-              <StatCard label="Most Played"  value={stats.mostPlayed} />
-              <StatCard label="Most Won"     value={stats.mostWon} />
+              <StatCard label="Most Played"  value={formatGameName(stats.mostPlayed)} />
+              <StatCard label="Most Won"     value={formatGameName(stats.mostWon)} />
               <div className="bg-white rounded-2xl shadow-md border border-gray-100 px-6 py-4 flex flex-col gap-2">
                 <span className="text-[10px] font-bold tracking-widest uppercase text-gray-400">Win Rate</span>
                 <WinRateBar pct={stats.winRate} />
@@ -229,7 +223,6 @@ function Performance() {
           </div>
         )}
 
-        {/* Historial */}
         {!loading && !error && rondas.length > 0 && (
           <div className="flex flex-col gap-4">
             <h2 className="text-xs font-bold tracking-widest uppercase text-gray-400">Round History</h2>
